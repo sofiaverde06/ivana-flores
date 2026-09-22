@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Árbol de Flores Amarillas y Reloj Romántico</title>
   <!-- Fuentes Románticas -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,6 +25,7 @@
       justify-content: center;
       align-items: center;
       position: relative;
+      touch-action: manipulation;
     }
 
     canvas {
@@ -37,57 +38,69 @@
       cursor: pointer;
     }
 
+    /* Mensaje Superior Izquierdo */
     .text-box {
       position: absolute;
-      top: 6%;
-      left: 6%;
-      max-width: 340px;
+      top: 5%;
+      left: 5%;
+      max-width: 300px;
       font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
+      font-size: 1.65rem;
       color: #6b4d13;
-      line-height: 1.4;
-      text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+      line-height: 1.35;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
       opacity: 0;
       transition: opacity 1.5s ease-in-out;
-      z-index: 2;
+      z-index: 3;
       pointer-events: none;
+      background: rgba(250, 243, 224, 0.7);
+      padding: 10px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(3px);
     }
 
+    /* Temporizador Inferior Izquierdo */
     .timer-box {
       position: absolute;
-      bottom: 5%;
-      left: 6%;
+      bottom: 4%;
+      left: 5%;
+      max-width: 300px;
       font-family: 'Quicksand', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #78350f;
       text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9);
       opacity: 0;
       transition: opacity 1.5s ease-in-out;
-      z-index: 2;
+      z-index: 3;
       pointer-events: none;
+      background: rgba(250, 243, 224, 0.7);
+      padding: 10px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(3px);
     }
     .timer-box span {
       display: block;
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       color: #d97706;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .sprout-message {
       position: absolute;
-      top: 35%;
+      top: 30%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
       font-family: 'Dancing Script', cursive;
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       color: #78350f;
-      text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9);
+      text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.95);
       opacity: 0;
       transition: all 1s ease-in-out;
       z-index: 5;
       pointer-events: none;
       text-align: center;
+      width: 90%;
     }
     .sprout-message.active {
       opacity: 1;
@@ -99,13 +112,13 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
-      background: rgba(255, 253, 245, 0.95);
+      background: rgba(255, 253, 245, 0.96);
       border: 2px solid #ef4444;
-      padding: 25px 30px;
+      padding: 20px 22px;
       border-radius: 20px;
       box-shadow: 0 15px 35px rgba(239, 68, 68, 0.25);
-      max-width: 85%;
-      width: 380px;
+      max-width: 90%;
+      width: 350px;
       z-index: 10;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: center;
@@ -117,7 +130,7 @@
     .note-modal p {
       font-family: 'Dancing Script', cursive;
       color: #58330a;
-      font-size: 1.6rem;
+      font-size: 1.45rem;
       margin-bottom: 15px;
       line-height: 1.3;
     }
@@ -159,39 +172,46 @@
     }
     .giant-text {
       font-family: 'Dancing Script', cursive;
-      font-size: 9vw;
+      font-size: 8vw;
       color: #d97706;
       text-align: center;
       text-shadow: 2px 2px 8px rgba(217, 119, 6, 0.25);
-      padding: 20px;
+      padding: 15px;
       border-right: 3px solid #d97706;
       white-space: pre;
       overflow: hidden;
       display: inline-block;
     }
 
+    /* Ajuste para Móviles (Evita superposición de árbol y textos) */
     @media (max-width: 600px) {
       .text-box {
-        font-size: 1.4rem;
-        top: 4%;
-        left: 5%;
-        right: 5%;
+        font-size: 1.2rem;
+        top: 2%;
+        left: 4%;
+        right: 4%;
         max-width: none;
+        text-align: center;
+        background: rgba(250, 243, 224, 0.82);
       }
       .timer-box {
-        bottom: 4%;
-        left: 5%;
-        font-size: 0.95rem;
+        bottom: 2%;
+        left: 4%;
+        right: 4%;
+        max-width: none;
+        font-size: 0.85rem;
+        text-align: center;
+        background: rgba(250, 243, 224, 0.82);
       }
       .timer-box span {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
       }
       .giant-text {
-        font-size: 13vw;
+        font-size: 12vw;
       }
       .sprout-message {
-        font-size: 1.7rem;
-        width: 85%;
+        font-size: 1.55rem;
+        top: 25%;
       }
     }
   </style>
@@ -201,13 +221,13 @@
   <canvas id="treeCanvas"></canvas>
 
   <div class="text-box" id="messageBox">
-    Flores Amarillas para el amor de mi vida.<br><br>
-    Si pudiera elegir un lugar seguro, sería a tu lado.<br><br>
+    Flores Amarillas para el amor de mi vida.<br>
+    Si pudiera elegir un lugar seguro, sería a tu lado.<br>
     Cuanto más tiempo contigo, más te amo. 🌻
   </div>
 
   <div class="timer-box" id="timerBox">
-    Llevo amándote 3 años, 6 meses, 24 días y...<br>
+    Llevo amándote 2 años, 6 meses, 24 días y...<br>
     <span id="timer">00 horas 00 minutos 00 segundos</span>
   </div>
 
@@ -235,7 +255,7 @@
     const typewriterText = document.getElementById('typewriterText');
     const sproutMessage = document.getElementById('sproutMessage');
 
-    let width, height, centerX, trunkBaseY;
+    let width, height, centerX, trunkBaseY, isMobile;
     let autoCloseTimer = null;
     let activeSpecialLeaf = null;
     let fallenRedLeavesCount = 0;
@@ -243,8 +263,11 @@
     function resizeCanvas() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-      centerX = width * 0.55; 
-      trunkBaseY = height * 0.88;
+      isMobile = width <= 600;
+
+      // El centro del árbol se ubica más abajo en móviles para no tocar el texto superior
+      centerX = isMobile ? width * 0.5 : width * 0.58; 
+      trunkBaseY = isMobile ? height * 0.88 : height * 0.90;
     }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -278,7 +301,7 @@
       "«Sé que estás loca porque me elegiste a mí, pero esa locura me encanta.»",
       "«Si fueras un meme, te daría 'compartir' todos los días de mi vida.»",
       "«Eres como el café por las mañanas: me alteras los nervios, pero te necesito para funcionar.»",
-      "«Gracias por hacerme  más feliz durante estos 3 años y 6 meses.»",
+      "«Gracias por hacerme el hombre más feliz durante estos 2 años y 6 meses.»",
       "«Contigo todo es más bonito, más suave y más feliz.»",
       "«Cada día a tu lado confirma que eres y siempre serás mi persona preferida. 🌻»"
     ];
@@ -295,7 +318,8 @@
       leaves.length = 0;
       specialLeaves.length = 0;
 
-      const scale = Math.min(width, height) * 0.025;
+      // Tamaño de la copa reducido ligeramente en móvil para dar espacio libre arriba y abajo
+      const scale = isMobile ? Math.min(width, height) * 0.018 : Math.min(width, height) * 0.024;
 
       for (let i = 0; i < 5000; i++) {
         const t = Math.PI * 2 * Math.random();
@@ -306,7 +330,7 @@
         leaves.push({
           relX: x * scale * r,
           relY: y * scale * r,
-          size: Math.random() * 8 + 5,
+          size: isMobile ? (Math.random() * 4 + 3.5) : (Math.random() * 8 + 5),
           color: Math.random() > 0.3 ? '#facc15' : (Math.random() > 0.5 ? '#fbbf24' : '#eab308'),
           phase: Math.random() * Math.PI * 2,
           freq: Math.random() * 2 + 1,
@@ -326,7 +350,7 @@
         specialLeaves.push({
           relX: x * scale * r,
           relY: y * scale * r,
-          size: 19,
+          size: isMobile ? 14 : 19,
           color: '#ef4444',
           message: specialMessages[i],
           phase: Math.random() * Math.PI * 2,
@@ -342,8 +366,8 @@
 
       finalGoldenLeaf = {
         relX: 0,
-        relY: -30,
-        size: 30,
+        relY: isMobile ? -18 : -30,
+        size: isMobile ? 20 : 30,
         color: '#a855f7', 
         phase: 0,
         currentX: 0,
@@ -352,12 +376,12 @@
       };
     }
 
-    // Caída más constante y frecuente de hojas amarillas
+    // Caída constante de hojas amarillas
     setInterval(() => {
       if (state === 'bloomed') {
         const notFalling = leaves.filter(l => !l.falling);
         if (notFalling.length > 0) {
-          const countToDrop = Math.floor(Math.random() * 3) + 1; // 1 a 3 hojas por intervalo
+          const countToDrop = Math.floor(Math.random() * 3) + 1;
           for (let k = 0; k < countToDrop; k++) {
             const randomLeaf = notFalling[Math.floor(Math.random() * notFalling.length)];
             if (randomLeaf) {
@@ -387,39 +411,40 @@
       ctx.clearRect(0, 0, width, height);
       
       const cx = width / 2;
-      const cy = height / 2 - 20;
+      const cy = height / 2 - 10;
       const hover = Math.sin(windAngle * 2) * 8;
       
       ctx.strokeStyle = '#65a30d';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = isMobile ? 5 : 6;
       ctx.beginPath();
       ctx.moveTo(cx, cy + hover);
-      ctx.lineTo(cx, cy + 90 + hover);
+      ctx.lineTo(cx, cy + (isMobile ? 65 : 90) + hover);
       ctx.stroke();
 
       ctx.fillStyle = '#65a30d';
       ctx.beginPath();
-      ctx.ellipse(cx - 18, cy + 55 + hover, 18, 7, -Math.PI/4, 0, Math.PI*2);
-      ctx.ellipse(cx + 18, cy + 45 + hover, 18, 7, Math.PI/4, 0, Math.PI*2);
+      ctx.ellipse(cx - 15, cy + 40 + hover, 15, 6, -Math.PI/4, 0, Math.PI*2);
+      ctx.ellipse(cx + 15, cy + 30 + hover, 15, 6, Math.PI/4, 0, Math.PI*2);
       ctx.fill();
 
       ctx.fillStyle = '#facc15';
+      const petalSize = isMobile ? 18 : 22;
       for (let i = 0; i < 12; i++) {
         const angle = (i * Math.PI) / 6;
         ctx.beginPath();
-        ctx.ellipse(cx + Math.cos(angle)*35, cy + hover + Math.sin(angle)*35, 22, 10, angle, 0, Math.PI*2);
+        ctx.ellipse(cx + Math.cos(angle)*28, cy + hover + Math.sin(angle)*28, petalSize, petalSize/2, angle, 0, Math.PI*2);
         ctx.fill();
       }
 
       ctx.fillStyle = '#78350f';
       ctx.beginPath();
-      ctx.arc(cx, cy + hover, 22, 0, Math.PI * 2);
+      ctx.arc(cx, cy + hover, isMobile ? 16 : 22, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = '#854d0e';
       ctx.font = 'bold 22px "Dancing Script", cursive';
       ctx.textAlign = 'center';
-      ctx.fillText('Tócame 💛', cx, cy + 140 + hover);
+      ctx.fillText('Tócame 💛', cx, cy + (isMobile ? 105 : 140) + hover);
     }
 
     function drawSeed() {
@@ -427,18 +452,18 @@
       
       ctx.fillStyle = '#8b5a2b';
       ctx.beginPath();
-      ctx.arc(centerX, trunkBaseY + 10, 28, 0, Math.PI, false);
+      ctx.arc(centerX, trunkBaseY + 10, isMobile ? 20 : 28, 0, Math.PI, false);
       ctx.fill();
 
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
-      ctx.arc(centerX, trunkBaseY - 12, 20, 0, Math.PI * 2);
+      ctx.arc(centerX, trunkBaseY - 10, isMobile ? 15 : 20, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 12px "Quicksand", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Flores Para Ti', centerX, trunkBaseY - 8);
+      ctx.fillText('Flores Para Ti', centerX, trunkBaseY - 6);
     }
 
     function drawSprout(p) {
@@ -446,12 +471,12 @@
       
       ctx.fillStyle = '#8b5a2b';
       ctx.beginPath();
-      ctx.arc(centerX, trunkBaseY + 10, 28, 0, Math.PI, false);
+      ctx.arc(centerX, trunkBaseY + 10, isMobile ? 20 : 28, 0, Math.PI, false);
       ctx.fill();
 
-      const stemHeight = 100 * p;
+      const stemHeight = (isMobile ? 70 : 100) * p;
       ctx.strokeStyle = '#65a30d';
-      ctx.lineWidth = 8;
+      ctx.lineWidth = isMobile ? 5 : 8;
       ctx.beginPath();
       ctx.moveTo(centerX, trunkBaseY);
       ctx.lineTo(centerX, trunkBaseY - stemHeight);
@@ -462,11 +487,11 @@
         ctx.fillStyle = '#65a30d';
         
         ctx.beginPath();
-        ctx.ellipse(centerX - 14 * leafScale, trunkBaseY - (stemHeight * 0.5), 16 * leafScale, 7 * leafScale, -Math.PI/4, 0, Math.PI * 2);
+        ctx.ellipse(centerX - 12 * leafScale, trunkBaseY - (stemHeight * 0.5), 14 * leafScale, 6 * leafScale, -Math.PI/4, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.ellipse(centerX + 14 * leafScale, trunkBaseY - (stemHeight * 0.7), 16 * leafScale, 7 * leafScale, Math.PI/4, 0, Math.PI * 2);
+        ctx.ellipse(centerX + 12 * leafScale, trunkBaseY - (stemHeight * 0.7), 14 * leafScale, 6 * leafScale, Math.PI/4, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -478,24 +503,23 @@
         for (let i = 0; i < 10; i++) {
           const angle = (i * Math.PI) / 5;
           ctx.beginPath();
-          ctx.ellipse(centerX + Math.cos(angle)*(20 * flowerScale), cy + Math.sin(angle)*(20 * flowerScale), 14 * flowerScale, 7 * flowerScale, angle, 0, Math.PI*2);
+          ctx.ellipse(centerX + Math.cos(angle)*(16 * flowerScale), cy + Math.sin(angle)*(16 * flowerScale), 10 * flowerScale, 5 * flowerScale, angle, 0, Math.PI*2);
           ctx.fill();
         }
 
         ctx.fillStyle = '#78350f';
         ctx.beginPath();
-        ctx.arc(centerX, cy, 12 * flowerScale, 0, Math.PI * 2);
+        ctx.arc(centerX, cy, 9 * flowerScale, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    // Tallo más grande y grueso
     function drawTrunk(growth, windOffset) {
-      const trunkHeight = height * 0.42; // Más alto
+      const trunkHeight = height * (isMobile ? 0.35 : 0.42);
       const topY = trunkBaseY - (trunkHeight * growth);
 
       ctx.strokeStyle = '#4a2e18';
-      ctx.lineWidth = Math.min(width, height) * 0.038 * (1 - growth * 0.2); // Más grueso
+      ctx.lineWidth = Math.min(width, height) * (isMobile ? 0.04 : 0.038) * (1 - growth * 0.2);
       ctx.lineCap = 'round';
 
       ctx.beginPath();
@@ -505,16 +529,16 @@
 
       if (growth > 0.4) {
         const branchGrowth = (growth - 0.4) / 0.6;
-        ctx.lineWidth = Math.min(width, height) * 0.016;
+        ctx.lineWidth = Math.min(width, height) * (isMobile ? 0.018 : 0.016);
         
         ctx.beginPath();
         ctx.moveTo(centerX + windOffset * 0.3, trunkBaseY - (trunkHeight * 0.4));
-        ctx.quadraticCurveTo(centerX - 70 + windOffset, trunkBaseY - (trunkHeight * 0.6), centerX - 100 + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.75 * branchGrowth));
+        ctx.quadraticCurveTo(centerX - (isMobile ? 45 : 70) + windOffset, trunkBaseY - (trunkHeight * 0.6), centerX - (isMobile ? 65 : 100) + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.75 * branchGrowth));
         ctx.stroke();
 
         ctx.beginPath();
         ctx.moveTo(centerX + windOffset * 0.5, trunkBaseY - (trunkHeight * 0.5));
-        ctx.quadraticCurveTo(centerX + 80 + windOffset, trunkBaseY - (trunkHeight * 0.65), centerX + 110 + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.8 * branchGrowth));
+        ctx.quadraticCurveTo(centerX + (isMobile ? 55 : 80) + windOffset, trunkBaseY - (trunkHeight * 0.65), centerX + (isMobile ? 75 : 110) + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.8 * branchGrowth));
         ctx.stroke();
       }
     }
@@ -525,7 +549,7 @@
       sproutMessage.classList.add('active');
 
       const interval = setInterval(() => {
-        sproutProgress += 0.0142; // 7 Segundos
+        sproutProgress += 0.0142; 
         if (sproutProgress >= 1) {
           sproutProgress = 1;
           clearInterval(interval);
@@ -540,7 +564,7 @@
 
     function render() {
       windAngle += 0.035;
-      const mainWind = Math.sin(windAngle) * 16;
+      const mainWind = Math.sin(windAngle) * (isMobile ? 8 : 16);
 
       if (state === 'initial_flower') {
         drawInitialFlower();
@@ -552,7 +576,7 @@
 
         drawTrunk(Math.min(progress, 1), mainWind * progress);
 
-        const crownY = trunkBaseY - (height * 0.42) - 40;
+        const crownY = trunkBaseY - (height * (isMobile ? 0.35 : 0.42)) - 30;
 
         if (progress > 0.3) {
           const leafProgress = Math.min((progress - 0.3) / 0.7, 1);
@@ -560,7 +584,7 @@
           const visibleCount = Math.floor(leaves.length * leafProgress);
           for (let i = 0; i < visibleCount; i++) {
             const leaf = leaves[i];
-            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * 14 + mainWind;
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
             const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.25;
             leaf.currentX = centerX + leaf.relX + leafWind;
             leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2 + leaf.phase) * 4);
@@ -570,7 +594,7 @@
           const visibleSpecial = Math.floor(specialLeaves.length * leafProgress);
           for (let i = 0; i < visibleSpecial; i++) {
             const leaf = specialLeaves[i];
-            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * 14 + mainWind;
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
             const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.3;
             leaf.currentX = centerX + leaf.relX + leafWind;
             leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2 + leaf.phase) * 4);
@@ -587,7 +611,7 @@
         ctx.clearRect(0, 0, width, height);
         drawTrunk(1, mainWind);
 
-        const crownY = trunkBaseY - (height * 0.42) - 40;
+        const crownY = trunkBaseY - (height * (isMobile ? 0.35 : 0.42)) - 30;
 
         for (let i = 0; i < leaves.length; i++) {
           const leaf = leaves[i];
@@ -596,7 +620,7 @@
             if (!leaf.landed) {
               leaf.fallY += 1.8;
               leaf.fallX += Math.sin(windAngle * 3 + leaf.phase) * 3;
-              const groundY = height * 0.94 + Math.sin(leaf.phase) * 12;
+              const groundY = height * 0.95 + Math.sin(leaf.phase) * 10;
               if (leaf.fallY >= groundY) {
                 leaf.fallY = groundY;
                 leaf.landed = true;
@@ -604,10 +628,10 @@
             }
             drawHeart(leaf.fallX, leaf.fallY, leaf.size, leaf.color, Math.sin(windAngle * 2) * 0.6);
           } else {
-            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * 14 + mainWind;
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
             const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.25;
             leaf.currentX = centerX + leaf.relX + leafWind;
-            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 5);
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 4);
             drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
           }
         }
@@ -619,7 +643,7 @@
             if (!leaf.landed) {
               leaf.fallY += 1.4;
               leaf.fallX += Math.sin(windAngle * 3 + leaf.phase) * 3 + 0.5;
-              const groundY = height * 0.92 + Math.sin(leaf.phase) * 15;
+              const groundY = height * 0.93 + Math.sin(leaf.phase) * 12;
               if (leaf.fallY >= groundY) {
                 leaf.fallY = groundY;
                 leaf.landed = true;
@@ -627,23 +651,23 @@
             }
             drawHeart(leaf.fallX, leaf.fallY, leaf.size, leaf.color, Math.sin(windAngle * 2) * 0.6);
           } else {
-            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * 16 + mainWind;
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 8 : 16) + mainWind;
             const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.35;
             leaf.currentX = centerX + leaf.relX + leafWind;
-            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 5);
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 4);
             drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
           }
         }
 
         if (fallenRedLeavesCount >= 10 && finalGoldenLeaf) {
           finalGoldenLeaf.visible = true;
-          const floatOffset = Math.sin(windAngle * 3) * 12;
+          const floatOffset = Math.sin(windAngle * 3) * 10;
           finalGoldenLeaf.currentX = centerX + finalGoldenLeaf.relX;
           finalGoldenLeaf.currentY = crownY + finalGoldenLeaf.relY + floatOffset;
           
           ctx.save();
           ctx.shadowColor = '#c084fc';
-          ctx.shadowBlur = 20;
+          ctx.shadowBlur = 18;
           drawHeart(finalGoldenLeaf.currentX, finalGoldenLeaf.currentY, finalGoldenLeaf.size, finalGoldenLeaf.color, Math.sin(windAngle * 3) * 0.2);
           ctx.restore();
         }
@@ -697,13 +721,13 @@
         drawSeed();
       } else if (state === 'seed') {
         const dist = Math.hypot(x - centerX, y - (trunkBaseY - 10));
-        if (dist < 35) {
+        if (dist < 45) {
           startSproutingSequence();
         }
       } else if (state === 'bloomed') {
         if (finalGoldenLeaf && finalGoldenLeaf.visible) {
           const dist = Math.hypot(x - finalGoldenLeaf.currentX, y - finalGoldenLeaf.currentY);
-          if (dist < 40) {
+          if (dist < (isMobile ? 50 : 40)) {
             giantScreen.classList.add('active');
             startTypewriter();
             return;
@@ -713,7 +737,7 @@
         specialLeaves.forEach(leaf => {
           if (!leaf.falling) {
             const dist = Math.hypot(x - leaf.currentX, y - leaf.currentY);
-            if (dist < 32) {
+            if (dist < (isMobile ? 38 : 32)) {
               if (autoCloseTimer) clearTimeout(autoCloseTimer);
               
               activeSpecialLeaf = leaf;
