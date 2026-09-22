@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Árbol de Flores Amarillas y Reloj Romántico</title>
+  <!-- Fuentes Románticas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #faf3e0;
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      touch-action: manipulation;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    /* Mensaje Superior Izquierdo */
+    .text-box {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      max-width: 300px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.65rem;
+      color: #6b4d13;
+      line-height: 1.35;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 3;
+      pointer-events: none;
+      background: rgba(250, 243, 224, 0.7);
+      padding: 10px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(3px);
+    }
+
+    /* Temporizador Inferior Izquierdo */
+    .timer-box {
+      position: absolute;
+      bottom: 4%;
+      left: 5%;
+      max-width: 300px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      color: #78350f;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9);
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 3;
+      pointer-events: none;
+      background: rgba(250, 243, 224, 0.7);
+      padding: 10px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(3px);
+    }
+    .timer-box span {
+      display: block;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #d97706;
+      margin-top: 2px;
+    }
+
+    .sprout-message {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.1rem;
+      color: #78350f;
+      text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.95);
+      opacity: 0;
+      transition: all 1s ease-in-out;
+      z-index: 5;
+      pointer-events: none;
+      text-align: center;
+      width: 90%;
+    }
+    .sprout-message.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .note-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(255, 253, 245, 0.96);
+      border: 2px solid #ef4444;
+      padding: 20px 22px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(239, 68, 68, 0.25);
+      max-width: 90%;
+      width: 350px;
+      z-index: 10;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+    .note-modal.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .note-modal p {
+      font-family: 'Dancing Script', cursive;
+      color: #58330a;
+      font-size: 1.45rem;
+      margin-bottom: 15px;
+      line-height: 1.3;
+    }
+    .note-modal button {
+      background: #ef4444;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 25px;
+      color: #ffffff;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: background 0.2s;
+    }
+    .note-modal button:hover {
+      background: #dc2626;
+    }
+
+    .giant-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #faf3e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease-in-out;
+    }
+    .giant-screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .giant-text {
+      font-family: 'Dancing Script', cursive;
+      font-size: 8vw;
+      color: #d97706;
+      text-align: center;
+      text-shadow: 2px 2px 8px rgba(217, 119, 6, 0.25);
+      padding: 15px;
+      border-right: 3px solid #d97706;
+      white-space: pre;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    /* Ajuste para Móviles (Evita superposición de árbol y textos) */
+    @media (max-width: 600px) {
+      .text-box {
+        font-size: 1.2rem;
+        top: 2%;
+        left: 4%;
+        right: 4%;
+        max-width: none;
+        text-align: center;
+        background: rgba(250, 243, 224, 0.82);
+      }
+      .timer-box {
+        bottom: 2%;
+        left: 4%;
+        right: 4%;
+        max-width: none;
+        font-size: 0.85rem;
+        text-align: center;
+        background: rgba(250, 243, 224, 0.82);
+      }
+      .timer-box span {
+        font-size: 0.95rem;
+      }
+      .giant-text {
+        font-size: 12vw;
+      }
+      .sprout-message {
+        font-size: 1.55rem;
+        top: 25%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="treeCanvas"></canvas>
+
+  <div class="text-box" id="messageBox">
+    Flores Amarillas para el amor de mi vida.<br>
+    Si pudiera elegir un lugar seguro, sería a tu lado.<br>
+    Cuanto más tiempo contigo, más te amo. 🌻
+  </div>
+
+  <div class="timer-box" id="timerBox">
+    Llevo amándote 2 años, 6 meses, 24 días y...<br>
+    <span id="timer">00 horas 00 minutos 00 segundos</span>
+  </div>
+
+  <div class="sprout-message" id="sproutMessage">
+    mi amor por ti crece cada día más ✨
+  </div>
+
+  <div class="note-modal" id="noteModal">
+    <p id="noteText"></p>
+    <button onclick="closeNote()">Cerrar ❤️</button>
+  </div>
+
+  <div class="giant-screen" id="giantScreen">
+    <h1 class="giant-text" id="typewriterText"></h1>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('treeCanvas');
+    const ctx = canvas.getContext('2d');
+    const messageBox = document.getElementById('messageBox');
+    const timerBox = document.getElementById('timerBox');
+    const noteModal = document.getElementById('noteModal');
+    const noteText = document.getElementById('noteText');
+    const giantScreen = document.getElementById('giantScreen');
+    const typewriterText = document.getElementById('typewriterText');
+    const sproutMessage = document.getElementById('sproutMessage');
+
+    let width, height, centerX, trunkBaseY, isMobile;
+    let autoCloseTimer = null;
+    let activeSpecialLeaf = null;
+    let fallenRedLeavesCount = 0;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      isMobile = width <= 600;
+
+      // El centro del árbol se ubica más abajo en móviles para no tocar el texto superior
+      centerX = isMobile ? width * 0.5 : width * 0.58; 
+      trunkBaseY = isMobile ? height * 0.88 : height * 0.90;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // --- TEMPORIZADOR ---
+    const startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 3);
+    startDate.setMonth(startDate.getMonth() - 6);
+    startDate.setDate(startDate.getDate() - 24);
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('timer').innerText = 
+        `${hours}h ${minutes}m ${seconds}s`;
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // --- 10 FRASES PERSONALIZADAS ---
+    const specialMessages = [
+      "«No te necesito para nada, pero te quiero para absolutamente todo.»",
+      "«Te amo no solo por cómo eres, sino por lo feliz que me hace ser yo cuando estoy contigo.»",
+      "«Mi lugar favorito en el mundo entero siempre será a tu lado.»",
+      "«Eres la casualidad más bonita que ha llegado a mi vida.»",
+      "«Sé que estás loca porque me elegiste a mí, pero esa locura me encanta.»",
+      "«Si fueras un meme, te daría 'compartir' todos los días de mi vida.»",
+      "«Eres como el café por las mañanas: me alteras los nervios, pero te necesito para funcionar.»",
+      "«Gracias por hacerme el hombre más feliz durante estos 2 años y 6 meses.»",
+      "«Contigo todo es más bonito, más suave y más feliz.»",
+      "«Cada día a tu lado confirma que eres y siempre serás mi persona preferida. 🌻»"
+    ];
+
+    let state = 'initial_flower'; 
+    let progress = 0;
+    let sproutProgress = 0;
+    let windAngle = 0;
+    const leaves = [];
+    const specialLeaves = [];
+    let finalGoldenLeaf = null;
+
+    function generateLeaves() {
+      leaves.length = 0;
+      specialLeaves.length = 0;
+
+      // Tamaño de la copa reducido ligeramente en móvil para dar espacio libre arriba y abajo
+      const scale = isMobile ? Math.min(width, height) * 0.018 : Math.min(width, height) * 0.024;
+
+      for (let i = 0; i < 5000; i++) {
+        const t = Math.PI * 2 * Math.random();
+        const r = Math.sqrt(Math.random());
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+        leaves.push({
+          relX: x * scale * r,
+          relY: y * scale * r,
+          size: isMobile ? (Math.random() * 4 + 3.5) : (Math.random() * 8 + 5),
+          color: Math.random() > 0.3 ? '#facc15' : (Math.random() > 0.5 ? '#fbbf24' : '#eab308'),
+          phase: Math.random() * Math.PI * 2,
+          freq: Math.random() * 2 + 1,
+          falling: false,
+          fallX: 0,
+          fallY: 0,
+          landed: false
+        });
+      }
+
+      for (let i = 0; i < 10; i++) {
+        const t = Math.PI * 2 * (i / 10);
+        const r = 0.4 + Math.random() * 0.4;
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+        specialLeaves.push({
+          relX: x * scale * r,
+          relY: y * scale * r,
+          size: isMobile ? 14 : 19,
+          color: '#ef4444',
+          message: specialMessages[i],
+          phase: Math.random() * Math.PI * 2,
+          freq: Math.random() * 2 + 1,
+          currentX: 0,
+          currentY: 0,
+          falling: false,
+          fallX: 0,
+          fallY: 0,
+          landed: false
+        });
+      }
+
+      finalGoldenLeaf = {
+        relX: 0,
+        relY: isMobile ? -18 : -30,
+        size: isMobile ? 20 : 30,
+        color: '#a855f7', 
+        phase: 0,
+        currentX: 0,
+        currentY: 0,
+        visible: false
+      };
+    }
+
+    // Caída constante de hojas amarillas
+    setInterval(() => {
+      if (state === 'bloomed') {
+        const notFalling = leaves.filter(l => !l.falling);
+        if (notFalling.length > 0) {
+          const countToDrop = Math.floor(Math.random() * 3) + 1;
+          for (let k = 0; k < countToDrop; k++) {
+            const randomLeaf = notFalling[Math.floor(Math.random() * notFalling.length)];
+            if (randomLeaf) {
+              randomLeaf.falling = true;
+              randomLeaf.fallX = randomLeaf.currentX || centerX;
+              randomLeaf.fallY = randomLeaf.currentY || (height * 0.3);
+            }
+          }
+        }
+      }
+    }, 600);
+
+    function drawHeart(x, y, size, color, angle = 0) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+      ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawInitialFlower() {
+      ctx.clearRect(0, 0, width, height);
+      
+      const cx = width / 2;
+      const cy = height / 2 - 10;
+      const hover = Math.sin(windAngle * 2) * 8;
+      
+      ctx.strokeStyle = '#65a30d';
+      ctx.lineWidth = isMobile ? 5 : 6;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + hover);
+      ctx.lineTo(cx, cy + (isMobile ? 65 : 90) + hover);
+      ctx.stroke();
+
+      ctx.fillStyle = '#65a30d';
+      ctx.beginPath();
+      ctx.ellipse(cx - 15, cy + 40 + hover, 15, 6, -Math.PI/4, 0, Math.PI*2);
+      ctx.ellipse(cx + 15, cy + 30 + hover, 15, 6, Math.PI/4, 0, Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle = '#facc15';
+      const petalSize = isMobile ? 18 : 22;
+      for (let i = 0; i < 12; i++) {
+        const angle = (i * Math.PI) / 6;
+        ctx.beginPath();
+        ctx.ellipse(cx + Math.cos(angle)*28, cy + hover + Math.sin(angle)*28, petalSize, petalSize/2, angle, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.arc(cx, cy + hover, isMobile ? 16 : 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#854d0e';
+      ctx.font = 'bold 22px "Dancing Script", cursive';
+      ctx.textAlign = 'center';
+      ctx.fillText('Tócame 💛', cx, cy + (isMobile ? 105 : 140) + hover);
+    }
+
+    function drawSeed() {
+      ctx.clearRect(0, 0, width, height);
+      
+      ctx.fillStyle = '#8b5a2b';
+      ctx.beginPath();
+      ctx.arc(centerX, trunkBaseY + 10, isMobile ? 20 : 28, 0, Math.PI, false);
+      ctx.fill();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(centerX, trunkBaseY - 10, isMobile ? 15 : 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px "Quicksand", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Flores Para Ti', centerX, trunkBaseY - 6);
+    }
+
+    function drawSprout(p) {
+      ctx.clearRect(0, 0, width, height);
+      
+      ctx.fillStyle = '#8b5a2b';
+      ctx.beginPath();
+      ctx.arc(centerX, trunkBaseY + 10, isMobile ? 20 : 28, 0, Math.PI, false);
+      ctx.fill();
+
+      const stemHeight = (isMobile ? 70 : 100) * p;
+      ctx.strokeStyle = '#65a30d';
+      ctx.lineWidth = isMobile ? 5 : 8;
+      ctx.beginPath();
+      ctx.moveTo(centerX, trunkBaseY);
+      ctx.lineTo(centerX, trunkBaseY - stemHeight);
+      ctx.stroke();
+
+      if (p > 0.2) {
+        const leafScale = (p - 0.2) / 0.8;
+        ctx.fillStyle = '#65a30d';
+        
+        ctx.beginPath();
+        ctx.ellipse(centerX - 12 * leafScale, trunkBaseY - (stemHeight * 0.5), 14 * leafScale, 6 * leafScale, -Math.PI/4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.ellipse(centerX + 12 * leafScale, trunkBaseY - (stemHeight * 0.7), 14 * leafScale, 6 * leafScale, Math.PI/4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (p > 0.4) {
+        const flowerScale = (p - 0.4) / 0.6;
+        const cy = trunkBaseY - stemHeight;
+
+        ctx.fillStyle = '#facc15';
+        for (let i = 0; i < 10; i++) {
+          const angle = (i * Math.PI) / 5;
+          ctx.beginPath();
+          ctx.ellipse(centerX + Math.cos(angle)*(16 * flowerScale), cy + Math.sin(angle)*(16 * flowerScale), 10 * flowerScale, 5 * flowerScale, angle, 0, Math.PI*2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = '#78350f';
+        ctx.beginPath();
+        ctx.arc(centerX, cy, 9 * flowerScale, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawTrunk(growth, windOffset) {
+      const trunkHeight = height * (isMobile ? 0.35 : 0.42);
+      const topY = trunkBaseY - (trunkHeight * growth);
+
+      ctx.strokeStyle = '#4a2e18';
+      ctx.lineWidth = Math.min(width, height) * (isMobile ? 0.04 : 0.038) * (1 - growth * 0.2);
+      ctx.lineCap = 'round';
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, trunkBaseY);
+      ctx.quadraticCurveTo(centerX + windOffset * 0.5, trunkBaseY - (trunkHeight * 0.5), centerX + windOffset, topY);
+      ctx.stroke();
+
+      if (growth > 0.4) {
+        const branchGrowth = (growth - 0.4) / 0.6;
+        ctx.lineWidth = Math.min(width, height) * (isMobile ? 0.018 : 0.016);
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX + windOffset * 0.3, trunkBaseY - (trunkHeight * 0.4));
+        ctx.quadraticCurveTo(centerX - (isMobile ? 45 : 70) + windOffset, trunkBaseY - (trunkHeight * 0.6), centerX - (isMobile ? 65 : 100) + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.75 * branchGrowth));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(centerX + windOffset * 0.5, trunkBaseY - (trunkHeight * 0.5));
+        ctx.quadraticCurveTo(centerX + (isMobile ? 55 : 80) + windOffset, trunkBaseY - (trunkHeight * 0.65), centerX + (isMobile ? 75 : 110) + windOffset * 1.2, trunkBaseY - (trunkHeight * 0.8 * branchGrowth));
+        ctx.stroke();
+      }
+    }
+
+    function startSproutingSequence() {
+      state = 'sprouting';
+      sproutProgress = 0;
+      sproutMessage.classList.add('active');
+
+      const interval = setInterval(() => {
+        sproutProgress += 0.0142; 
+        if (sproutProgress >= 1) {
+          sproutProgress = 1;
+          clearInterval(interval);
+          
+          sproutMessage.classList.remove('active');
+          generateLeaves();
+          progress = 0;
+          state = 'growing';
+        }
+      }, 30);
+    }
+
+    function render() {
+      windAngle += 0.035;
+      const mainWind = Math.sin(windAngle) * (isMobile ? 8 : 16);
+
+      if (state === 'initial_flower') {
+        drawInitialFlower();
+      } else if (state === 'sprouting') {
+        drawSprout(sproutProgress);
+      } else if (state === 'growing') {
+        ctx.clearRect(0, 0, width, height);
+        progress += 0.015;
+
+        drawTrunk(Math.min(progress, 1), mainWind * progress);
+
+        const crownY = trunkBaseY - (height * (isMobile ? 0.35 : 0.42)) - 30;
+
+        if (progress > 0.3) {
+          const leafProgress = Math.min((progress - 0.3) / 0.7, 1);
+          
+          const visibleCount = Math.floor(leaves.length * leafProgress);
+          for (let i = 0; i < visibleCount; i++) {
+            const leaf = leaves[i];
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
+            const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.25;
+            leaf.currentX = centerX + leaf.relX + leafWind;
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2 + leaf.phase) * 4);
+            drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
+          }
+
+          const visibleSpecial = Math.floor(specialLeaves.length * leafProgress);
+          for (let i = 0; i < visibleSpecial; i++) {
+            const leaf = specialLeaves[i];
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
+            const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.3;
+            leaf.currentX = centerX + leaf.relX + leafWind;
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2 + leaf.phase) * 4);
+            drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
+          }
+        }
+
+        if (progress >= 1) {
+          state = 'bloomed';
+          messageBox.style.opacity = '1';
+          timerBox.style.opacity = '1';
+        }
+      } else if (state === 'bloomed') {
+        ctx.clearRect(0, 0, width, height);
+        drawTrunk(1, mainWind);
+
+        const crownY = trunkBaseY - (height * (isMobile ? 0.35 : 0.42)) - 30;
+
+        for (let i = 0; i < leaves.length; i++) {
+          const leaf = leaves[i];
+
+          if (leaf.falling) {
+            if (!leaf.landed) {
+              leaf.fallY += 1.8;
+              leaf.fallX += Math.sin(windAngle * 3 + leaf.phase) * 3;
+              const groundY = height * 0.95 + Math.sin(leaf.phase) * 10;
+              if (leaf.fallY >= groundY) {
+                leaf.fallY = groundY;
+                leaf.landed = true;
+              }
+            }
+            drawHeart(leaf.fallX, leaf.fallY, leaf.size, leaf.color, Math.sin(windAngle * 2) * 0.6);
+          } else {
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 6 : 14) + mainWind;
+            const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.25;
+            leaf.currentX = centerX + leaf.relX + leafWind;
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 4);
+            drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
+          }
+        }
+
+        for (let i = 0; i < specialLeaves.length; i++) {
+          const leaf = specialLeaves[i];
+
+          if (leaf.falling) {
+            if (!leaf.landed) {
+              leaf.fallY += 1.4;
+              leaf.fallX += Math.sin(windAngle * 3 + leaf.phase) * 3 + 0.5;
+              const groundY = height * 0.93 + Math.sin(leaf.phase) * 12;
+              if (leaf.fallY >= groundY) {
+                leaf.fallY = groundY;
+                leaf.landed = true;
+              }
+            }
+            drawHeart(leaf.fallX, leaf.fallY, leaf.size, leaf.color, Math.sin(windAngle * 2) * 0.6);
+          } else {
+            const leafWind = Math.sin(windAngle * leaf.freq + leaf.phase) * (isMobile ? 8 : 16) + mainWind;
+            const leafRot = Math.cos(windAngle * leaf.freq + leaf.phase) * 0.35;
+            leaf.currentX = centerX + leaf.relX + leafWind;
+            leaf.currentY = crownY + leaf.relY + (Math.sin(windAngle * 2.5 + leaf.phase) * 4);
+            drawHeart(leaf.currentX, leaf.currentY, leaf.size, leaf.color, leafRot);
+          }
+        }
+
+        if (fallenRedLeavesCount >= 10 && finalGoldenLeaf) {
+          finalGoldenLeaf.visible = true;
+          const floatOffset = Math.sin(windAngle * 3) * 10;
+          finalGoldenLeaf.currentX = centerX + finalGoldenLeaf.relX;
+          finalGoldenLeaf.currentY = crownY + finalGoldenLeaf.relY + floatOffset;
+          
+          ctx.save();
+          ctx.shadowColor = '#c084fc';
+          ctx.shadowBlur = 18;
+          drawHeart(finalGoldenLeaf.currentX, finalGoldenLeaf.currentY, finalGoldenLeaf.size, finalGoldenLeaf.color, Math.sin(windAngle * 3) * 0.2);
+          ctx.restore();
+        }
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    function detachLeaf(leaf) {
+      if (leaf && !leaf.falling) {
+        leaf.falling = true;
+        leaf.fallX = leaf.currentX;
+        leaf.fallY = leaf.currentY;
+        fallenRedLeavesCount++;
+      }
+    }
+
+    function closeNote() {
+      noteModal.classList.remove('active');
+      if (autoCloseTimer) {
+        clearTimeout(autoCloseTimer);
+        autoCloseTimer = null;
+      }
+      if (activeSpecialLeaf) {
+        detachLeaf(activeSpecialLeaf);
+        activeSpecialLeaf = null;
+      }
+    }
+
+    function startTypewriter() {
+      const fullText = "te amo ivana";
+      typewriterText.innerText = "";
+      let index = 0;
+
+      const interval = setInterval(() => {
+        if (index < fullText.length) {
+          typewriterText.innerText += fullText.charAt(index);
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 180);
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (state === 'initial_flower') {
+        state = 'seed';
+        drawSeed();
+      } else if (state === 'seed') {
+        const dist = Math.hypot(x - centerX, y - (trunkBaseY - 10));
+        if (dist < 45) {
+          startSproutingSequence();
+        }
+      } else if (state === 'bloomed') {
+        if (finalGoldenLeaf && finalGoldenLeaf.visible) {
+          const dist = Math.hypot(x - finalGoldenLeaf.currentX, y - finalGoldenLeaf.currentY);
+          if (dist < (isMobile ? 50 : 40)) {
+            giantScreen.classList.add('active');
+            startTypewriter();
+            return;
+          }
+        }
+
+        specialLeaves.forEach(leaf => {
+          if (!leaf.falling) {
+            const dist = Math.hypot(x - leaf.currentX, y - leaf.currentY);
+            if (dist < (isMobile ? 38 : 32)) {
+              if (autoCloseTimer) clearTimeout(autoCloseTimer);
+              
+              activeSpecialLeaf = leaf;
+              noteText.innerText = leaf.message;
+              noteModal.classList.add('active');
+
+              autoCloseTimer = setTimeout(() => {
+                closeNote();
+              }, 7000);
+            }
+          }
+        });
+      }
+    });
+
+    requestAnimationFrame(render);
+  </script>
+</body>
+</html>
